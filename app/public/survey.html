@@ -46,6 +46,21 @@
         </form>
       </div>
     </nav>
+    <div class="container user-details w-50">
+      <form style="margin-top: 100px;">
+        <div class="form-group">
+          <label for="name-input">Your name</label>
+          <input type="text" class="form-control" id="name-input" />
+        </div>
+        <div class="form-group">
+          <label for="picture-input">Link to your profile picture</label>
+          <input type="text" class="form-control" id="picture-input" />
+        </div>
+        <button class="btn btn-outline-success submit-user-info">
+          Submit & begin
+        </button>
+      </form>
+    </div>
     <div class="container survey-page w-70">
       <h1 class="display-4" style="margin: 50px 0px 50px 0px;">
         Would you rather...
@@ -56,7 +71,7 @@
           class="btn btn-outline-success btn-lg btn-block question-button"
           id="question-a"
         >
-          Blah2
+          Option 1
         </button>
         <h1 style="margin: 20px 0px 20px 0px; text-align: center;">OR</h1>
         <button
@@ -64,7 +79,7 @@
           class="btn btn-outline-success btn-lg btn-block question-button"
           id="question-b"
         >
-          Blah1
+          Option 2
         </button>
       </div>
     </div>
@@ -81,80 +96,36 @@
         <span class="sr-only">Loading...</span>
       </div>
     </div>
+    <div
+      class="container show-match w-70"
+      style="text-align: center; margin-top: 100px;"
+    >
+      <h1 class="display-4">Match found!</h1>
+      <button
+        class="btn btn-outline-success view-match"
+        style="margin-top: 50px;"
+      >
+        Click to view
+      </button>
+    </div>
     <script
-      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-      integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+      src="https://code.jquery.com/jquery-3.4.1.js"
+      integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
       crossorigin="anonymous"
     ></script>
+    <script src="./static/logic.js"></script>
     <script>
-      let questionsArray = [
-        {
-          optionA: "Earn $0.01 every time you take a step?",
-          optionB: "Earn $1 every time you jump?"
-        },
-        {
-          optionA:
-            "Be controlled by a mantis shrimp for a day and be forced to watch him make stupid shrimp decisions?",
-          optionB:
-            "Be the most wanted pirate on all the seven seas for a month in the 1700s?"
-        },
-        {
-          optionA: "Own a shower that keeps you clean for 7 days?",
-          optionB: "Own a bed that gives you a full night's rest in 1 hour?"
-        },
-        {
-          optionA:
-            "Find a book containing information on everything that's going to happen in the next 1,000 years?",
-          optionB:
-            "Find a book containing answers to all unsolved past mysteries (e.g. did aliens build the pyramids)?"
-        },
-        {
-          optionA:
-            "Stay home and be lazy for the rest of your life, ordering anything you want from Amazon for free?",
-          optionB: "Go outside and earn a dollar for every step you take?"
-        },
-        {
-          optionA: "Have a 100% chance of winning 500k?",
-          optionB: "Have a one-off 50% chance of winning 10 million?"
-        },
-        { optionA: "Take no fall damage?", optionB: "Have infinite sprint?" },
-        {
-          optionA: "Only be able to walk everywhere, but never feel fatigued?",
-          optionB:
-            "Teleport anywhere instantly, but feel just as fatigued as if you’d walked the same distance?"
-        },
-        {
-          optionA: "Have the ability to transform into anything you've seen?",
-          optionB:
-            "Have the ability to master any skill just by observing it for an hour?"
-        },
-        {
-          optionA: "Have a list of everyone who’s ever been in love with you?",
-          optionB: "Have a list of everyone who’s ever absolutely hated you?"
-        },
-        {
-          optionA: "There be a ding sound every time you wink?",
-          optionB:
-            "Have a cartoonish gun sound go off when you make finger guns?"
-        },
-        {
-          optionA:
-            "Throw your parachute out of a plane, wait 5 seconds and jump after it?",
-          optionB: "Play one round of Russian roulette?"
-        },
-        {
-          optionA: "Own a cat that gives off free WiFi?",
-          optionB: "Own a dog that can sweep and mop floors?"
-        }
-      ];
-
-      let answersArray = [];
-
-      let numberOfQuestionsAsked = 0;
-
       $(document).ready(function() {
+        $(".survey-page").hide();
+        $(".show-match").hide();
         $(".endgame-container").hide();
-        startNewRound();
+        $(".submit-user-info").on("click", function(event) {
+          event.preventDefault();
+          userInfo.name = $("#name-input").val();
+          userInfo.photo = $("#picture-input").val();
+          console.log(userInfo.name, userInfo.photo);
+          startNewRound();
+        });
       });
 
       $(".question-button").on("click", function(event) {
@@ -162,52 +133,9 @@
         console.log(response);
       });
 
-      function startNewRound() {
-        if (numberOfQuestionsAsked < questionsArray.length - 1) {
-          loadQuestions();
-        } else {
-          findMatch();
-        }
-      }
-
-      function loadQuestions() {
-        $("#question-a").html(questionsArray[numberOfQuestionsAsked].optionA);
-        $("#question-b").html(questionsArray[numberOfQuestionsAsked].optionB);
-        numberOfQuestionsAsked++;
-        console.log(numberOfQuestionsAsked);
-        logResponse();
-      }
-
-      function findMatch() {
-        $(".survey-page").hide();
-        $(".endgame-container").show();
-        setTimeout(function() {
-          showMatch();
-        }, 3000);
-      }
-
-      function showMatch() {
-        console.log("Match found!");
-      }
-
-      function logResponse(event) {
-        let answer = event.currentTarget.id;
-        storeResponse(answer);
-      }
-
-      function storeResponse(answer) {
-        if (answer === "question-a") {
-          answersArray.push(1);
-          console.log(answersArray);
-          startNewRound();
-        } else if (answer === "question-b") {
-          answersArray.push(2);
-          console.log(answersArray);
-          startNewRound();
-        } else {
-          console.log("Unexpected input");
-        }
-      }
+      $(".view-match").on("click", function() {
+        //   Modal
+      });
     </script>
   </body>
 </html>
