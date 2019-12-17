@@ -28,7 +28,7 @@ app.get("/api/friends", function(req, res) {
 
 app.post("/api/friends", (req, res) => {
   friendsDatabase.data.push(req.body);
-  let databaseString = JSON.stringify(friendsDatabase, null, 3);
+  let databaseString = JSON.stringify(friendsDatabase, null, 4);
   fs.writeFileSync("app/data/friends.json", databaseString);
   res.send("Friend added");
   console.log(friendsDatabase);

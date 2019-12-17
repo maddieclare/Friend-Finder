@@ -1,12 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>FriendFinder - Survey</title>
-</head>
-<body>
-    <h1>SURVEY</h1>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Take the test!</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">FriendFinder</a>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="http://localhost:3000/home">Home</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="http://localhost:3000/survey">Test</a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="http://localhost:3000/api/friends"
+              target="_blank"
+              >User List</a
+            >
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input
+            class="form-control mr-sm-2"
+            type="text"
+            placeholder="Search for users"
+            aria-label="Search"
+          />
+          <button class="btn btn-success my-2 my-sm-0" type="submit">
+            Search
+          </button>
+        </form>
+      </div>
+    </nav>
+    <div class="container survey-page w-70">
+      <h1 class="display-4" style="margin: 50px 0px 50px 0px;">
+        Would you rather...
+      </h1>
+      <div class="questions-section">
+        <button
+          type="button"
+          class="btn btn-outline-success btn-lg btn-block question-button"
+          id="question-a"
+        >
+          Blah2
+        </button>
+        <h1 style="margin: 20px 0px 20px 0px; text-align: center;">OR</h1>
+        <button
+          type="button"
+          class="btn btn-outline-success btn-lg btn-block question-button"
+          id="question-b"
+        >
+          Blah1
+        </button>
+      </div>
+      <div class="container endgame-container" style="display: none;">
+        <h1 class="display-4">Finding your match...</h1>
+      </div>
+    </div>
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+      integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      let questionsArray = [
+        {
+          optionA: "Earn $0.01 every time you take a step?",
+          optionB: "Earn $1 every time you jump?"
+        },
+        {
+          optionA:
+            "Be controlled by a mantis shrimp for a day and be forced to watch him make stupid shrimp decisions?",
+          optionB:
+            "Be the most wanted pirate on all the seven seas for a month in the 1700s?"
+        },
+        {
+          optionA: "Own a shower that keeps you clean for 7 days?",
+          optionB: "Own a bed that gives you a full night's rest in 1 hour?"
+        },
+        {
+          optionA:
+            "Find a book containing information on everything that's going to happen in the next 1,000 years?",
+          optionB:
+            "Find a book containing answers to all unsolved past mysteries (e.g. did aliens build the pyramids)?"
+        },
+        {
+          optionA:
+            "Stay home and be lazy for the rest of your life, ordering anything you want from Amazon for free?",
+          optionB: "Go outside and earn a dollar for every step you take?"
+        },
+        {
+          optionA: "Have a 100% chance of winning 500k?",
+          optionB: "Have a one-off 50% chance of winning 10 million?"
+        },
+        { optionA: "Take no fall damage?", optionB: "Have infinite sprint?" },
+        {
+          optionA: "Only be able to walk everywhere, but never feel fatigued?",
+          optionB:
+            "Teleport anywhere instantly, but feel just as fatigued as if you’d walked the same distance?"
+        },
+        {
+          optionA: "Have the ability to transform into anything you've seen?",
+          optionB:
+            "Have the ability to master any skill just by observing it for an hour?"
+        },
+        {
+          optionA: "Have a list of everyone who’s ever been in love with you?",
+          optionB: "Have a list of everyone who’s ever absolutely hated you?"
+        },
+        {
+          optionA: "There be a ding sound every time you wink?",
+          optionB:
+            "Have a cartoonish gun sound go off when you make finger guns?"
+        },
+        {
+          optionA:
+            "Throw your parachute out of a plane, wait 5 seconds and jump after it?",
+          optionB: "Play one round of Russian roulette?"
+        },
+        {
+          optionA: "Own a cat that gives off free WiFi?",
+          optionB: "Own a dog that can sweep and mop floors?"
+        }
+      ];
+
+      let numberOfQuestionsAsked = 0;
+
+      $(document).ready(function() {
+        startNewRound();
+      });
+
+      $(".question-button").on("click", function(event) {
+        event.preventDefault();
+        startNewRound();
+      });
+
+      function startNewRound() {
+        if (numberOfQuestionsAsked < questionsArray.length - 2) {
+          loadQuestions();
+        } else {
+          findMatch();
+        }
+      }
+
+      function loadQuestions() {
+        $("#question-a").html(questionsArray[numberOfQuestionsAsked].optionA);
+        $("#question-b").html(questionsArray[numberOfQuestionsAsked].optionB);
+        numberOfQuestionsAsked++;
+        console.log(numberOfQuestionsAsked);
+      }
+
+      function findMatch() {
+        console.log("Finding a match for you");
+      }
+    </script>
+  </body>
 </html>
