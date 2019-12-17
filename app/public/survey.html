@@ -67,8 +67,18 @@
           Blah1
         </button>
       </div>
-      <div class="container endgame-container" style="display: none;">
-        <h1 class="display-4">Finding your match...</h1>
+    </div>
+    <div
+      class="container endgame-container w-70"
+      style="text-align: center; margin-top: 100px;"
+    >
+      <h1 class="display-4">Finding your match...</h1>
+      <div
+        class="spinner-border text-success"
+        role="status"
+        style="margin-top: 50px; width: 50px; height: 50px;"
+      >
+        <span class="sr-only">Loading...</span>
       </div>
     </div>
     <script
@@ -138,19 +148,22 @@
         }
       ];
 
+      let answersArray = [];
+
       let numberOfQuestionsAsked = 0;
 
       $(document).ready(function() {
+        $(".endgame-container").hide();
         startNewRound();
       });
 
       $(".question-button").on("click", function(event) {
-        event.preventDefault();
-        startNewRound();
+        logResponse(event);
+        console.log(response);
       });
 
       function startNewRound() {
-        if (numberOfQuestionsAsked < questionsArray.length - 2) {
+        if (numberOfQuestionsAsked < questionsArray.length - 1) {
           loadQuestions();
         } else {
           findMatch();
@@ -162,10 +175,38 @@
         $("#question-b").html(questionsArray[numberOfQuestionsAsked].optionB);
         numberOfQuestionsAsked++;
         console.log(numberOfQuestionsAsked);
+        logResponse();
       }
 
       function findMatch() {
-        console.log("Finding a match for you");
+        $(".survey-page").hide();
+        $(".endgame-container").show();
+        setTimeout(function() {
+          showMatch();
+        }, 3000);
+      }
+
+      function showMatch() {
+        console.log("Match found!");
+      }
+
+      function logResponse(event) {
+        let answer = event.currentTarget.id;
+        storeResponse(answer);
+      }
+
+      function storeResponse(answer) {
+        if (answer === "question-a") {
+          answersArray.push(1);
+          console.log(answersArray);
+          startNewRound();
+        } else if (answer === "question-b") {
+          answersArray.push(2);
+          console.log(answersArray);
+          startNewRound();
+        } else {
+          console.log("Unexpected input");
+        }
       }
     </script>
   </body>
