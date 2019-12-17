@@ -16,7 +16,7 @@ let htmlRoutes = require("./app/routing/htmlRoutes");
 app.use(htmlRoutes);
 
 let apiRoutes = require("./app/routing/apiRoutes");
-app.use(apiRoutes);
+app.use("/api", apiRoutes);
 
 app.listen(PORT, function() {
   console.log(`App listening on PORT ${PORT}`);

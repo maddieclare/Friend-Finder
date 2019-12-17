@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Take the test!</title>
+    <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
+    <!-- /Bootstrap CSS -->
   </head>
   <body>
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <a class="navbar-brand" href="#">FriendFinder</a>
 
@@ -46,6 +49,9 @@
         </form>
       </div>
     </nav>
+    <!-- /Navbar -->
+
+    <!-- User details -->
     <div class="container user-details w-50">
       <form style="margin-top: 100px;">
         <div class="form-group">
@@ -61,6 +67,9 @@
         </button>
       </form>
     </div>
+    <!-- /User details -->
+
+    <!-- Questionnaire -->
     <div class="container survey-page w-70">
       <h1 class="display-4" style="margin: 50px 0px 50px 0px;">
         Would you rather...
@@ -83,6 +92,9 @@
         </button>
       </div>
     </div>
+    <!-- /Questionnaire -->
+
+    <!-- Match finder -->
     <div
       class="container endgame-container w-70"
       style="text-align: center; margin-top: 100px;"
@@ -100,20 +112,81 @@
       class="container show-match w-70"
       style="text-align: center; margin-top: 100px;"
     >
-      <h1 class="display-4">Match found!</h1>
+      <h1 class="display-4">
+        Match found!
+      </h1>
       <button
+        type="button"
+        data-toggle="modal"
+        data-target="#best-match-modal"
         class="btn btn-outline-success view-match"
         style="margin-top: 50px;"
       >
         Click to view
       </button>
     </div>
+    <!-- /Match finder -->
+
+    <!-- Modals -->
+    <div
+      class="modal"
+      id="best-match-modal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p class="lead">Your new best friend is...</p>
+            <h1 class="display-4 match-name" style="text-align: center;"></h1>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" data-dismiss="modal">
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /Modals -->
+
+    <!-- jQuery -->
     <script
       src="https://code.jquery.com/jquery-3.4.1.js"
       integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
       crossorigin="anonymous"
     ></script>
-    <script src="./static/logic.js"></script>
+    <!-- /jQuery -->
+
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <!-- /Bootstrap -->
+
+    <!-- Survey logic -->
+    <script src="./static/questions.js"></script>
+
     <script>
       $(document).ready(function() {
         $(".survey-page").hide();
@@ -123,19 +196,82 @@
           event.preventDefault();
           userInfo.name = $("#name-input").val();
           userInfo.photo = $("#picture-input").val();
-          console.log(userInfo.name, userInfo.photo);
-          startNewRound();
+          startNewRound(event);
         });
       });
 
       $(".question-button").on("click", function(event) {
         logResponse(event);
-        console.log(response);
       });
 
       $(".view-match").on("click", function() {
-        //   Modal
+        $(".match-name").html(userBestie.name);
       });
+
+      let userInfo = { name: "Default", photo: "blank", scores: [] };
+
+      let userBestie = {};
+
+      let numberOfQuestionsAsked = 0;
+
+      function startNewRound(event) {
+        $(".user-details").hide();
+        $(".survey-page").show();
+        if (numberOfQuestionsAsked < questionsArray.length) {
+          loadQuestions();
+        } else {
+          storeUserData();
+        }
+      }
+
+      function loadQuestions() {
+        $("#question-a").html(questionsArray[numberOfQuestionsAsked].optionA);
+        $("#question-b").html(questionsArray[numberOfQuestionsAsked].optionB);
+        numberOfQuestionsAsked++;
+        console.log(numberOfQuestionsAsked);
+      }
+
+      function storeUserData() {
+        $.post("api/friends", userInfo, function(data, status, xhr) {
+          console.log("User data stored in friends.json");
+          console.log("My bestie is ");
+          console.log(data);
+          userBestie = data;
+        });
+        findMatch();
+      }
+
+      function findMatch() {
+        $(".survey-page").hide();
+        $(".endgame-container").show();
+        setTimeout(function() {
+          showMatch();
+        }, 2000);
+      }
+
+      function showMatch() {
+        $(".endgame-container").hide();
+        $(".show-match").show();
+      }
+
+      function logResponse(event) {
+        console.log(event);
+        let answer = event.currentTarget.id;
+        storeResponse(answer);
+      }
+
+      function storeResponse(answer) {
+        if (answer === "question-a") {
+          userInfo.scores.push(1);
+          startNewRound();
+        } else if (answer === "question-b") {
+          userInfo.scores.push(2);
+          startNewRound();
+        } else {
+          console.log("Unexpected input");
+        }
+      }
     </script>
+    <!-- /Survey logic -->
   </body>
 </html>
