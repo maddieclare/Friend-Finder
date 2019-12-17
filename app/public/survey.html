@@ -40,7 +40,7 @@
           <input
             class="form-control mr-sm-2"
             type="text"
-            placeholder="Search for users"
+            placeholder="Search (not functional yet)"
             aria-label="Search"
           />
           <button class="btn btn-success my-2 my-sm-0" type="submit">
@@ -238,14 +238,10 @@
         $("#question-a").html(questionsArray[numberOfQuestionsAsked].optionA);
         $("#question-b").html(questionsArray[numberOfQuestionsAsked].optionB);
         numberOfQuestionsAsked++;
-        console.log(numberOfQuestionsAsked);
       }
 
       function storeUserData() {
         $.post("/api/friends", userInfo, function(data, status, xhr) {
-          console.log("User data stored in friends.json");
-          console.log("My bestie is ");
-          console.log(data);
           userBestie = data;
         });
         findMatch();
@@ -265,7 +261,6 @@
       }
 
       function logResponse(event) {
-        console.log(event);
         let answer = event.currentTarget.id;
         storeResponse(answer);
       }
