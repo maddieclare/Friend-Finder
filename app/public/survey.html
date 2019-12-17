@@ -139,7 +139,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Results</h5>
             <button
               type="button"
               class="close"
@@ -151,7 +151,17 @@
           </div>
           <div class="modal-body">
             <p class="lead">Your new best friend is...</p>
-            <h1 class="display-4 match-name" style="text-align: center;"></h1>
+            <h1
+              class="display-4 match-name"
+              style="text-align: center; border-radius: 10px;"
+            ></h1>
+            <img
+              src="#"
+              class="match-picture"
+              alt="Picture of your match"
+              height="250"
+              style="display: block; margin: 0 auto;"
+            />
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-success" data-dismiss="modal">
@@ -206,10 +216,10 @@
 
       $(".view-match").on("click", function() {
         $(".match-name").html(userBestie.name);
+        $(".match-picture").attr("src", userBestie.photo);
       });
 
       let userInfo = { name: "Default", photo: "blank", scores: [] };
-
       let userBestie = {};
 
       let numberOfQuestionsAsked = 0;
@@ -232,7 +242,7 @@
       }
 
       function storeUserData() {
-        $.post("api/friends", userInfo, function(data, status, xhr) {
+        $.post("/api/friends", userInfo, function(data, status, xhr) {
           console.log("User data stored in friends.json");
           console.log("My bestie is ");
           console.log(data);

@@ -10,12 +10,12 @@ const getFriendsDatabase = () => {
 
 router.get("/friends", function(req, res) {
   res.send(friendsDatabase);
-  let friendsDatabase = getFriendsDatabase();
+  var friendsDatabase = getFriendsDatabase();
 });
 
 router.post("/friends", (req, res) => {
-  let myBestFriend = getBestMatch(req.body);
-  let friendsDatabase = getFriendsDatabase();
+  var myBestFriend = getBestMatch(req.body);
+  var friendsDatabase = getFriendsDatabase();
   friendsDatabase.data.push(req.body);
   let databaseString = JSON.stringify(friendsDatabase, null, 4);
   fs.writeFileSync("app/data/friends.json", databaseString);
@@ -23,11 +23,11 @@ router.post("/friends", (req, res) => {
 });
 
 function getBestMatch(person) {
-  let friendsDatabase = getFriendsDatabase().data;
-  let bestFriend = {};
-  let bestFriendValue = 1e6;
+  var friendsDatabase = getFriendsDatabase().data;
+  var bestFriend = {};
+  var bestFriendValue = 1e6;
   for (let i = 0; i < friendsDatabase.length; i++) {
-    let friendScore = calculateMatch(person, friendsDatabase[i]);
+    var friendScore = calculateMatch(person, friendsDatabase[i]);
     if (bestFriendValue > friendScore) {
       bestFriendValue = friendScore;
       bestFriend = friendsDatabase[i];
@@ -37,8 +37,8 @@ function getBestMatch(person) {
 }
 
 function calculateMatch(personOne, personTwo) {
-  let differenceOverall = 0;
-  for (let i = 0; i < personOne.scores.length; i++) {
+  var differenceOverall = 0;
+  for (var i = 0; i < personOne.scores.length; i++) {
     differenceOverall += Math.abs(personOne.scores[i] - personTwo.scores[i]);
   }
   return differenceOverall;
